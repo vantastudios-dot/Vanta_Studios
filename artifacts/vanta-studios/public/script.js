@@ -580,10 +580,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sceneEl) {
       sceneEl.style.opacity = 1;
     }
-    const footerSceneEl = document.getElementById('unicorn-footer');
-    if (footerSceneEl) {
-      footerSceneEl.style.opacity = 1;
-    }
     window.UnicornStudio.init({ scale: 1, dpi: 1.5 })
       .then(scenes => {
         console.log('Unicorn Studio initialized scenes:', scenes);
@@ -609,5 +605,21 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   updatePortoTime();
   setInterval(updatePortoTime, 60000);
+
+  // --- 14. Work Card Page Transitions ---
+  const pageOverlay = document.getElementById('page-transition-overlay');
+  document.querySelectorAll('.work-card-link').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (!href || href === '#') return;
+      e.preventDefault();
+      if (pageOverlay) {
+        pageOverlay.classList.add('active');
+        setTimeout(() => { window.location.href = href; }, 620);
+      } else {
+        window.location.href = href;
+      }
+    });
+  });
 
 });
