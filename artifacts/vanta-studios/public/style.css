@@ -853,15 +853,7 @@ body.light-theme .MenuToggleButton-module-scss-module__qv1k1W__plain {
   transform: scale(1.03);
 }
 
-/* Infinite Marquee Scroll Keyframes */
-@keyframes marquee-scroll {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
+/* Marquee scroll is driven by GSAP ticker in script.js */
 
 @keyframes mobile-marquee-scroll {
   0% {

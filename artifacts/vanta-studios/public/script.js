@@ -415,46 +415,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 8. Infinite Draggable Brand Marquee (Footer of Dedicated) ---
   const marqueeList = document.querySelector('.draggable-marquee__list');
-  let isDown = false;
-  let startX;
-  let scrollLeft;
-  let marqueeAnimOffset = 0;
-  
-  // Custom marquee CSS keyframe animation is infinite, but mouse dragging overrides it temporarily
+
   if (marqueeList) {
-    marqueeList.style.animation = 'marquee-scroll 25s linear infinite';
-    
-    marqueeList.addEventListener('mousedown', (e) => {
-      isDown = true;
-      marqueeList.style.animationPlayState = 'paused';
-      startX = e.pageX - marqueeList.offsetLeft;
-      // Extract current translation X from styles
-      const transform = window.getComputedStyle(marqueeList).transform;
-      if (transform !== 'none') {
-        const matrix = new DOMMatrixReadOnly(transform);
-        marqueeAnimOffset = matrix.m41;
+    let xPos = 0;
+    const speed = 1.2; // px per frame
+    let isDragging = false;
+    let lastMouseX = 0;
+    let velocity = 0;
+    let halfWidth = 0;
+
+    // Compute halfWidth lazily so images are loaded
+    const getHalfWidth = () => {
+      if (!halfWidth) halfWidth = marqueeList.scrollWidth / 2;
+      return halfWidth;
+    };
+
+    gsap.ticker.add(() => {
+      const hw = getHalfWidth();
+      if (!isDragging) {
+        xPos -= speed + velocity;
+        velocity *= 0.9;
       }
+      // Seamless wrap at the halfway point
+      if (xPos <= -hw) xPos += hw;
+      if (xPos > 0) xPos -= hw;
+      gsap.set(marqueeList, { x: xPos });
     });
 
-    marqueeList.addEventListener('mouseleave', () => {
-      if (isDown) {
-        isDown = false;
-        marqueeList.style.animationPlayState = 'running';
-      }
-    });
+    const onMouseDown = (e) => {
+      isDragging = true;
+      lastMouseX = e.clientX;
+      velocity = 0;
+    };
+    const onMouseMove = (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - lastMouseX;
+      xPos += dx;
+      velocity = dx * 0.3;
+      lastMouseX = e.clientX;
+    };
+    const onMouseUp = () => { isDragging = false; };
 
-    marqueeList.addEventListener('mouseup', () => {
-      isDown = false;
-      marqueeList.style.animationPlayState = 'running';
-    });
+    marqueeList.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
 
-    marqueeList.addEventListener('mousemove', (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - marqueeList.offsetLeft;
-      const walk = (x - startX) * 1.5; // Drag speed multiplier
-      marqueeList.style.transform = `translateX(${marqueeAnimOffset + walk}px)`;
-    });
+    // Touch support
+    marqueeList.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      lastMouseX = e.touches[0].clientX;
+      velocity = 0;
+    }, { passive: true });
+    window.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const dx = e.touches[0].clientX - lastMouseX;
+      xPos += dx;
+      velocity = dx * 0.3;
+      lastMouseX = e.touches[0].clientX;
+    }, { passive: true });
+    window.addEventListener('touchend', () => { isDragging = false; });
   }
 
   // --- 9. FAQ Accordion Toggle Logic ---
