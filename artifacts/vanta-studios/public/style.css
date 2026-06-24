@@ -1226,20 +1226,20 @@ body.light-theme .MenuToggleButton-module-scss-module__qv1k1W__plain {
 #stats .cards {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 0 2rem;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  padding: 0;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
   display: grid;
 }
 
 #stats .cards .card {
   background-color: var(--bg-light);
-  border-radius: 12px;
+  border-radius: 0;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 1.5rem;
   width: 100%;
-  min-height: 360px;
-  padding: 2.5rem;
+  padding: 3.5rem;
   display: flex;
   position: relative;
   transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
@@ -1248,15 +1248,15 @@ body.light-theme .MenuToggleButton-module-scss-module__qv1k1W__plain {
 #stats .cards .card .heading {
   color: var(--black);
   font-family: var(--font-primary);
-  font-size: 5rem;
-  letter-spacing: -0.02em;
+  font-size: 7rem;
+  letter-spacing: -0.03em;
   line-height: 1;
 }
 
 #stats .cards .card .description {
   color: var(--text-light);
   font-family: var(--font-heading);
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   line-height: 1.4;
 }
 
