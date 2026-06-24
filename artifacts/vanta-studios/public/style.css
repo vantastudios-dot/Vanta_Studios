@@ -1035,7 +1035,7 @@ body.light-theme .MenuToggleButton-module-scss-module__qv1k1W__plain {
 #work .work-card-image {
   border-radius: 0;
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 16 / 10;
   position: relative;
   overflow: hidden;
   background-color: #111;
