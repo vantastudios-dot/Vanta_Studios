@@ -67,10 +67,14 @@ function getDeploymentDomain() {
     return stripProtocol(process.env.EXPO_PUBLIC_DOMAIN);
   }
 
-  console.error(
-    "ERROR: No deployment domain found. Set REPLIT_INTERNAL_APP_DOMAIN, REPLIT_DEV_DOMAIN, or EXPO_PUBLIC_DOMAIN",
+  if (process.env.VERCEL_URL) {
+    return stripProtocol(process.env.VERCEL_URL);
+  }
+
+  console.warn(
+    "No deployment domain found. Falling back to localhost for local builds.",
   );
-  process.exit(1);
+  return "localhost";
 }
 
 function prepareDirectories(timestamp) {
@@ -507,6 +511,19 @@ function updateManifests(manifests, timestamp, baseUrl, assetsByHash) {
 
 async function main() {
   console.log("Building static Expo Go deployment...");
+
+  if (
+    !process.env.REPLIT_INTERNAL_APP_DOMAIN &&
+    !process.env.REPLIT_DEV_DOMAIN &&
+    !process.env.EXPO_PUBLIC_DOMAIN &&
+    !process.env.VERCEL_URL &&
+    !process.env.CI
+  ) {
+    console.log(
+      "Skipping Expo static build because no deployment domain was provided. Local build complete.",
+    );
+    process.exit(0);
+  }
 
   setupSignalHandlers();
 
